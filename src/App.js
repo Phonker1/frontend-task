@@ -1,23 +1,17 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import { generateCitizens } from './utils/dataGenerator';
 
 function App() {
+  // Временно: генерируем данные и выводим количество
+  const testData = generateCitizens(10); // 10 записей для теста
+  console.log('Сгенерировано записей:', testData.length);
+  console.log('Первая запись:', testData[0]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Портал ППК РЭО - Современная версия</h1>
+      <p>Система управления данными граждан</p>
     </div>
   );
 }
