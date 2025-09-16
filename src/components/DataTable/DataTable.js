@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import './DataTable.css';
-import UserCard from '../UserCard';
+import UserCard from '../UserCard/UserCard';
+import styles from './DataTable.module.css';
 
 const DataTable = ({ data }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -8,7 +8,6 @@ const DataTable = ({ data }) => {
   const [statusFilter, setStatusFilter] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  // Правильная сортировка данных
   const sortedData = useMemo(() => {
     if (!sortConfig.key) return data;
     
@@ -16,13 +15,11 @@ const DataTable = ({ data }) => {
       let valueA = a[sortConfig.key];
       let valueB = b[sortConfig.key];
       
-      // Для числовых значений
       if (sortConfig.key === 'id' || sortConfig.key === 'age') {
         valueA = Number(valueA);
         valueB = Number(valueB);
       }
       
-      // Для строковых значений (регистронезависимо)
       if (typeof valueA === 'string') {
         valueA = valueA.toLowerCase();
         valueB = valueB.toLowerCase();
@@ -38,7 +35,6 @@ const DataTable = ({ data }) => {
     });
   }, [data, sortConfig]);
 
-  // Обработчик фильтрации по статусу
   const handleStatusFilter = () => {
     const statusOrder = [null, 'Активен', 'В обработке', 'Неактивен'];
     const currentIndex = statusOrder.indexOf(statusFilter);
@@ -46,27 +42,6 @@ const DataTable = ({ data }) => {
     setStatusFilter(statusOrder[nextIndex]);
   };
 
-  // Комбинированная фильтрация (статус + поиск по ФИО)
-  const filteredData = useMemo(() => {
-    let result = sortedData;
-    
-    // Фильтр по статусу
-    if (statusFilter) {
-      result = result.filter(item => item.status === statusFilter);
-    }
-    
-    // Фильтр по ФИО
-    if (filter) {
-      const searchTerm = filter.toLowerCase();
-      result = result.filter(item =>
-        item.fullName.toLowerCase().includes(searchTerm)
-      );
-    }
-    
-    return result;
-  }, [sortedData, statusFilter, filter]);
-
-  // Обработчик сортировки для других колонок
   const handleSort = (key) => {
     let direction = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -75,74 +50,95 @@ const DataTable = ({ data }) => {
     setSortConfig({ key, direction });
   };
 
-  return (
-  <div className="data-table-container">
-    <div className="table-header">
-      <h2>Картотека граждан</h2>
-      <div className="controls">
-        <input
-          type="text"
-          placeholder="Поиск по ФИО..."
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="search-input"
-        />
-        <span className="total-count">
-          Всего записей: {filteredData.length}
-        </span>
-      </div>
-    </div>
+  const filteredData = useMemo(() => {
+    console.time('filtering');
+    let result = sortedData;
+    if (statusFilter) {
+      result = result.filter(item => item.status === statusFilter);
+    }
+    if (filter) {
+      const searchTerm = filter.toLowerCase();
+      result = result.filter(item =>
+      item.fullName.toLowerCase().includes(searchTerm)
+    );
+  }
+  
+  console.timeEnd('filtering');
+  return result;
+}, [sortedData, statusFilter, filter]);
 
-    <div className="table-wrapper">
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th onClick={() => handleSort('id')}>
-              ID {sortConfig.key === 'id' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
-            </th>
-            <th onClick={() => handleSort('fullName')}>
-              ФИО {sortConfig.key === 'fullName' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
-            </th>
-            <th onClick={() => handleSort('age')}>
-              Возраст {sortConfig.key === 'age' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
-            </th>
-            <th onClick={() => handleSort('gender')}>
-              Пол {sortConfig.key === 'gender' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
-            </th>
-            <th onClick={handleStatusFilter}>
-              Статус
-            </th>
-            <th>Действия</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.slice(0, 50).map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.fullName}</td>
-              <td>{item.age}</td>
-              <td>{item.gender}</td>
-              <td>
-                <span className={`status-badge status-${item.status.toLowerCase().replace(' ', '-')}`}>
-                  {item.status}
-                </span>
-              </td>
-              <td>
-                <button className="view-btn" onClick={() => setSelectedUser(item)}>
-                  Просмотреть
-                </button>
-              </td>
+  return (
+    <div className={styles.dataTableContainer}>
+      <div className={styles.tableHeader}>
+        <h2>Картотека граждан</h2>
+        <div className={styles.controls}>
+          <input
+            type="text"
+            placeholder="Поиск по ФИО..."
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className={styles.searchInput}
+          />
+          <span className={styles.totalCount}>
+            Всего записей: {filteredData.length}
+          </span>
+        </div>
+      </div>
+
+      <div className={styles.tableWrapper}>
+        <table className={styles.dataTable}>
+          <thead>
+            <tr>
+              <th onClick={() => handleSort('id')}>
+                ID {sortConfig.key === 'id' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+              </th>
+              <th onClick={() => handleSort('fullName')}>
+                ФИО {sortConfig.key === 'fullName' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+              </th>
+              <th onClick={() => handleSort('age')}>
+                Возраст {sortConfig.key === 'age' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+              </th>
+              <th onClick={() => handleSort('gender')}>
+                Пол {sortConfig.key === 'gender' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
+              </th>
+              <th onClick={handleStatusFilter}>
+                Статус 
+              </th>
+              <th>Действия</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredData.slice(0, 50).map((item) => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.fullName}</td>
+                <td>{item.age}</td>
+                <td>{item.gender}</td>
+                <td>
+                  <span className={`${styles.statusBadge} ${styles['status-' + item.status.toLowerCase().replace(' ', '-')]}`}>
+                    {item.status}
+                  </span>
+                </td>
+                <td>
+                  <button 
+                    className={styles.viewBtn}
+                    onClick={() => setSelectedUser(item)}
+                  >
+                    Просмотреть
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <UserCard 
+        user={selectedUser} 
+        isOpen={!!selectedUser} 
+        onClose={() => setSelectedUser(null)} 
+      />
     </div>
-    <UserCard 
-      user={selectedUser} 
-      isOpen={!!selectedUser} 
-      onClose={() => setSelectedUser(null)} 
-    />
-  </div>
   );
 };
 

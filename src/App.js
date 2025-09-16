@@ -1,18 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import DataTable from './components/DataTable';
 import { generateCitizens } from './utils/DataGenerator';
+import DataTable from './components/DataTable/DataTable';
+import Dashboard from './components/Dashboard/Dashboard';
 
 function App() {
-  // Генерируем тестовые данные
-  const testData = generateCitizens(1000);
+  const [currentView, setCurrentView] = useState('dashboard');
+  const testData = generateCitizens(100000); 
 
   return (
     <div className="App">
-      <h1>Портал ППК РЭО - Современная версия</h1>
-      <p>Система управления данными граждан</p>
-      
-      <DataTable data={testData} />
+      <nav className="app-nav">
+        <button 
+          onClick={() => setCurrentView('dashboard')}
+          className={currentView === 'dashboard' ? 'active' : ''}
+        >
+          📊 Дашборд
+        </button>
+        <button 
+          onClick={() => setCurrentView('table')}
+          className={currentView === 'table' ? 'active' : ''}
+        >
+          📋 Картотека
+        </button>
+      </nav>
+
+      {currentView === 'dashboard' ? (
+        <Dashboard data={testData} />
+      ) : (
+        <DataTable data={testData} />
+      )}
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// Генератор данных об образовании
 const generateEducationData = () => {
   const institutions = [
     'МГУ им. Ломоносова',
@@ -20,8 +19,7 @@ const generateEducationData = () => {
     faculty: ['Экономический', 'Юридический', 'Технический', 'Гуманитарный', 'Медицинский'][Math.floor(Math.random() * 5)]
   };
 };
-
-// Генератор данных об опыте работы  
+ 
 const generateWorkExperience = () => {
   const companies = [
     'Яндекс',
@@ -69,13 +67,12 @@ const generateWorkExperience = () => {
   };
 };
 
-// Генератор семейных данных
 const generateFamilyData = () => {
   const relations = ['Супруг(а)', 'Ребенок', 'Родитель', 'Брат', 'Сестра', 'Дедушка', 'Бабушка'];
   const genders = ['Мужской', 'Женский'];
   
   const familyMembers = [];
-  const memberCount = Math.floor(Math.random() * 5); // 0-4 члена семьи
+  const memberCount = Math.floor(Math.random() * 5); 
   
   for (let i = 0; i < memberCount; i++) {
     const isMale = Math.random() > 0.5;
@@ -94,7 +91,6 @@ const generateFamilyData = () => {
   return familyMembers;
 };
 
-// Генератор данных о недвижимости
 const generatePropertyData = () => {
   const propertyTypes = ['Квартира', 'Дом', 'Дача', 'Земельный участок', 'Гараж'];
   const cities = ['Москва', 'Санкт-Петербург', 'Новосибирск', 'Екатеринбург', 'Казань', 'Нижний Новгород', 'Краснодар'];
@@ -107,11 +103,9 @@ const generatePropertyData = () => {
   };
 };
 
-// Главный генератор граждан
 export const generateCitizens = (count = 100000) => {
   const citizens = [];
   
-  // Массивы для случайных значений
   const maleNames = ['Александр', 'Дмитрий', 'Максим', 'Сергей', 'Андрей', 'Алексей', 'Иван', 'Михаил', 'Артем', 'Кирилл'];
   const femaleNames = ['Елена', 'Ольга', 'Наталья', 'Ирина', 'Анна', 'Мария', 'Светлана', 'Екатерина', 'Татьяна', 'Юлия'];
   
@@ -140,9 +134,8 @@ export const generateCitizens = (count = 100000) => {
       malePatronymics[Math.floor(Math.random() * malePatronymics.length)] :
       femalePatronymics[Math.floor(Math.random() * femalePatronymics.length)];
     
-    // Возраст от 20 до 80 лет
     const birthDate = new Date(
-      2024 - (20 + Math.floor(Math.random() * 60)), // Год рождения: от 20 до 80 лет
+      2024 - (20 + Math.floor(Math.random() * 40)), 
       Math.floor(Math.random() * 12),
       Math.floor(Math.random() * 28) + 1
     );
@@ -150,37 +143,30 @@ export const generateCitizens = (count = 100000) => {
     const age = new Date().getFullYear() - birthDate.getFullYear();
     
     citizens.push({
-      // Основная информация
+      
       id: i + 1,
       fullName: `${surname} ${firstName} ${patronymic}`,
       birthDate: birthDate.toISOString().split('T')[0],
       age: age,
       gender: isMale ? 'Мужской' : 'Женский',
       
-      // Контактная информация
       phone: `+7${Math.floor(9000000000 + Math.random() * 1000000000)}`,
       email: `citizen${i + 1}@mail.ru`,
       address: `г. ${cities[Math.floor(Math.random() * cities.length)]}, ул. ${['Ленина', 'Пушкина', 'Гагарина', 'Советская', 'Мира'][Math.floor(Math.random() * 5)]}, д. ${Math.floor(Math.random() * 100) + 1}`,
       
-      // Документы и статусы
       status: statuses[Math.floor(Math.random() * statuses.length)],
       registrationDate: new Date(2020 + Math.floor(Math.random() * 4), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0],
       passportSeries: Math.floor(1000 + Math.random() * 9000),
       passportNumber: Math.floor(100000 + Math.random() * 900000),
       
-      // Образование
       education: generateEducationData(),
       
-      // Опыт работы
       workExperience: generateWorkExperience(),
       
-      // Семья
       family: generateFamilyData(),
       
-      // Недвижимость
       property: generatePropertyData(),
       
-      // Дополнительные флаги
       hasChildren: Math.random() > 0.5,
       isEmployed: Math.random() > 0.3,
       hasMedicalInsurance: Math.random() > 0.4,
@@ -191,7 +177,6 @@ export const generateCitizens = (count = 100000) => {
   return citizens;
 };
 
-// Генератор семейных связей (для связанных таблиц)
 export const generateFamilyMembers = (citizenId, count) => {
   const relations = ['Супруг(а)', 'Ребенок', 'Родитель', 'Брат/Сестра'];
   const members = [];

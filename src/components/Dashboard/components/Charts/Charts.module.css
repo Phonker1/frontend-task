@@ -1,0 +1,58 @@
+.chartsContainer {
+  margin-bottom: 30px;
+}
+
+.chartsContainer h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 25px;
+}
+
+.chartCard {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartCard h3 {
+  margin: 0 0 20px 0;
+  color: #2c3e50;
+  text-align: center;
+  font-size: 18px;
+}
+
+.chartWrapper {
+  flex: 1;
+  min-height: 300px;
+}
+
+@media (max-width: 1024px) {
+  .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chartCard {
+    height: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chartCard {
+    padding: 20px;
+    height: 320px;
+  }
+  
+  .chartsGrid {
+    gap: 20px;
+  }
+}

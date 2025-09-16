@@ -13,7 +13,7 @@ const UserCard = ({ user, isOpen, onClose }) => {
         </div>
         
         <div className={styles.modalBody}>
-          {/* Основные данные */}
+          
           <div className={styles.section}>
             <h3>Основные данные</h3>
             <div className={styles.fields}>
@@ -42,7 +42,6 @@ const UserCard = ({ user, isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Контактная информация */}
           <div className={styles.section}>
             <h3>Контактная информация</h3>
             <div className={styles.fields}>
@@ -61,7 +60,6 @@ const UserCard = ({ user, isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Документы */}
           <div className={styles.section}>
             <h3>Документы</h3>
             <div className={styles.fields}>
@@ -76,7 +74,6 @@ const UserCard = ({ user, isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Образование */}
           <div className={styles.section}>
             <h3>Образование</h3>
             <div className={styles.fields}>
@@ -99,7 +96,6 @@ const UserCard = ({ user, isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Опыт работы */}
           <div className={styles.section}>
             <h3>Опыт работы</h3>
             <div className={styles.fields}>
@@ -121,15 +117,18 @@ const UserCard = ({ user, isOpen, onClose }) => {
               </div>
               <div className={styles.field}>
                 <label>Навыки:</label>
-                <span>{user?.workExperience?.skills?.join(', ') || 'Не указано'}</span>
+                <span>
+                  {user?.workExperience?.skills && Array.isArray(user.workExperience.skills) 
+                  ? user.workExperience.skills.join(', '): 'Не указано'
+                  }
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Семья */}
           <div className={styles.section}>
             <h3>Семья ({user?.family?.length || 0} человек)</h3>
-            {user?.family?.length > 0 ? (
+            {user?.family && Array.isArray(user.family) && user.family.length > 0 ? (
               <table className={styles.subTable}>
                 <thead>
                   <tr>
@@ -141,12 +140,12 @@ const UserCard = ({ user, isOpen, onClose }) => {
                 </thead>
                 <tbody>
                   {user.family.map((member) => (
-                    <tr key={member.id}>
-                      <td>{member.fullName}</td>
-                      <td>{member.relation}</td>
-                      <td>{member.age}</td>
-                      <td>{member.gender}</td>
-                    </tr>
+                    <tr key={member?.id || Math.random()}>
+                      <td>{member?.fullName || 'Не указано'}</td>
+                      <td>{member?.relation || 'Не указано'}</td>
+                      <td>{member?.age || 'Не указано'}</td>
+                      <td>{member?.gender || 'Не указано'}</td>
+                      </tr>
                   ))}
                 </tbody>
               </table>
@@ -155,7 +154,6 @@ const UserCard = ({ user, isOpen, onClose }) => {
             )}
           </div>
 
-          {/* Недвижимость */}
           <div className={styles.section}>
             <h3>Недвижимость</h3>
             <div className={styles.fields}>
@@ -178,7 +176,6 @@ const UserCard = ({ user, isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Дополнительная информация */}
           <div className={styles.section}>
             <h3>Дополнительная информация</h3>
             <div className={styles.fields}>
