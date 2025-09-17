@@ -8,7 +8,7 @@ const Dashboard = ({ data }) => {
     return (
       <div className={styles.dashboard}>
         <div className={styles.header}>
-          <h1>Дашборд управления гражданами</h1>
+          <h1>Центр контроля гражданами</h1>
           <p>Нет данных для отображения</p>
         </div>
       </div>
@@ -25,7 +25,7 @@ const Dashboard = ({ data }) => {
   return (
     <div className={styles.dashboard}>
       <div className={styles.header}>
-        <h1>Дашборд управления гражданами</h1>
+        <h1>Центр контроля гражданами</h1>
         <p>Обзор статистики и ключевых показателей</p>
       </div>
 

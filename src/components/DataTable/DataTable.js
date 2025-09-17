@@ -7,6 +7,8 @@ const DataTable = ({ data }) => {
   const [filter, setFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 50;
 
   const sortedData = useMemo(() => {
     if (!sortConfig.key) return data;
@@ -51,21 +53,99 @@ const DataTable = ({ data }) => {
   };
 
   const filteredData = useMemo(() => {
-    console.time('filtering');
     let result = sortedData;
+    
     if (statusFilter) {
       result = result.filter(item => item.status === statusFilter);
     }
+    
     if (filter) {
       const searchTerm = filter.toLowerCase();
       result = result.filter(item =>
-      item.fullName.toLowerCase().includes(searchTerm)
+        item.fullName.toLowerCase().includes(searchTerm)
+      );
+    }
+    
+    return result;
+  }, [sortedData, statusFilter, filter]);
+
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredData.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredData, currentPage]);
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const Pagination = () => {
+    const maxVisiblePages = 5; 
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    const pageNumbers = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <div className={styles.pagination}>
+        <button 
+          onClick={() => setCurrentPage(1)}
+          disabled={currentPage === 1}
+          className={styles.paginationButton}
+        >
+          ⏮️ Первая
+        </button>
+        
+        <button 
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className={styles.paginationButton}
+        >
+          ← Назад
+        </button>
+
+        <div className={styles.pageNumbers}>
+          {pageNumbers.map(number => (
+            <button
+              key={number}
+              onClick={() => setCurrentPage(number)}
+              className={`${styles.pageNumber} ${currentPage === number ? styles.activePage : ''}`}
+            >
+              {number}
+            </button>
+          ))}
+          
+          {endPage < totalPages && (
+            <span className={styles.pageDots}>...</span>
+          )}
+        </div>
+
+        <button 
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages || totalPages === 0}
+          className={styles.paginationButton}
+        >
+          Вперед →
+        </button>
+        
+        <button 
+          onClick={() => setCurrentPage(totalPages)}
+          disabled={currentPage === totalPages || totalPages === 0}
+          className={styles.paginationButton}
+        >
+          Последняя ⏭️
+        </button>
+
+        <span className={styles.pageInfo}>
+          Страница {currentPage} из {totalPages || 1}
+        </span>
+      </div>
     );
-  }
-  
-  console.timeEnd('filtering');
-  return result;
-}, [sortedData, statusFilter, filter]);
+  };
 
   return (
     <div className={styles.dataTableContainer}>
@@ -102,13 +182,13 @@ const DataTable = ({ data }) => {
                 Пол {sortConfig.key === 'gender' && (sortConfig.direction === 'ascending' ? '↑' : '↓')}
               </th>
               <th onClick={handleStatusFilter}>
-                Статус 
+                Статус
               </th>
               <th>Действия</th>
             </tr>
           </thead>
           <tbody>
-            {filteredData.slice(0, 50).map((item) => (
+            {paginatedData.map((item) => (
               <tr key={item.id}>
                 <td>{item.id}</td>
                 <td>{item.fullName}</td>
@@ -132,6 +212,8 @@ const DataTable = ({ data }) => {
           </tbody>
         </table>
       </div>
+
+      <Pagination />
 
       <UserCard 
         user={selectedUser} 
